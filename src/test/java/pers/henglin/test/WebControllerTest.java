@@ -51,10 +51,10 @@ public class WebControllerTest {
         // given
         Optional<Data> data = Optional.of(new Data(ID, COL1, COL2));
 
-        // when
         when(this.request.getParameter("id")).thenReturn("1");
         when(this.webDao.findDataById(anyInt())).thenReturn(data);
 
+        // when
         String response = this.webController.read(this.request);
 
         // then
@@ -77,10 +77,10 @@ public class WebControllerTest {
         // given
         DatabaseException exception = new DatabaseException();
 
-        // when
         when(this.request.getParameter("id")).thenReturn("1");
         when(this.webDao.findDataById(anyInt())).thenThrow(exception);
 
+        // when
         String response = this.webController.read(this.request);
 
         // then
@@ -95,10 +95,10 @@ public class WebControllerTest {
         // given
         Optional<Data> data = Optional.empty();
 
-        // when
         when(this.request.getParameter("id")).thenReturn("1");
         when(this.webDao.findDataById(anyInt())).thenReturn(data);
 
+        // when
         String response = this.webController.read(this.request);
 
         // then
