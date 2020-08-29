@@ -27,4 +27,17 @@ public class WebController {
         }
         return GSON.toJson(data.get());
     }
+
+    public String update(HttpServletRequest request){
+        int id = Integer.parseInt(request.getParameter("id"));
+        String col1 = request.getParameter("col1");
+        String col2 = request.getParameter("col2");
+        Optional<Data> data;
+        try {
+            data = webDao.updateData(new Data(id, col1, col2));
+        } catch (DatabaseException e) {
+            return e.getMessage();
+        }
+        return GSON.toJson(data.get());
+    }
 }

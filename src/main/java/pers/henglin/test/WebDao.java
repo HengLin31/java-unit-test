@@ -13,4 +13,8 @@ public class WebDao {
     public Optional<Data> findDataById(int id) throws DatabaseException {
         throw new DatabaseException();
     }
+
+    public Optional<Data> updateData(Data data) throws DatabaseException {
+        throw new DatabaseException();
+    }
 }
