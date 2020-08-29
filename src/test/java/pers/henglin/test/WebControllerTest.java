@@ -6,6 +6,7 @@ import com.google.gson.JsonSyntaxException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.powermock.reflect.Whitebox;
 import pers.henglin.test.bean.Data;
@@ -103,5 +104,45 @@ public class WebControllerTest {
 
         // then
         assertThat(response, anything(EXPECT_EXCEPTION_MSG));
+    }
+
+    @Test
+    public void Should_GetChangeData_When_UpdateDataValue() throws DatabaseException {
+        final int ID = 1;
+        final String ORI_COL1 = "col1";
+        final String ORI_COL2 = "col2";
+
+        final String NEW_COL1 = "new col1";
+        final String NEW_COL2 = "new col2";
+
+        // given
+        Optional<Data> newData = Optional.of(new Data(ID, NEW_COL1, NEW_COL2));
+        ArgumentCaptor<Data> dataCaptor = ArgumentCaptor.forClass(Data.class);
+
+        when(this.request.getParameter("id")).thenReturn(String.valueOf(ID));
+        when(this.request.getParameter("col1")).thenReturn(ORI_COL1);
+        when(this.request.getParameter("col2")).thenReturn(ORI_COL2);
+        when(this.webDao.updateData(any())).thenReturn(newData);
+
+        // when
+        String response = this.webController.update(this.request);
+
+        // then
+        try{
+            Data result = this.GSON.fromJson(response, Data.class);
+
+            verify(this.webDao, times(1)).updateData(dataCaptor.capture());
+
+            Data inputData = dataCaptor.getValue();
+            assertThat(ID, is(inputData.getId()));
+            assertThat(ORI_COL1, is(inputData.getCol1()));
+            assertThat(ORI_COL2, is(inputData.getCol2()));
+
+            assertThat(result.getId(), is(ID));
+            assertThat(result.getCol1(), is(NEW_COL1));
+            assertThat(result.getCol2(), is(NEW_COL2));
+        } catch (JsonSyntaxException e){
+            fail("parser response data fail.");
+        }
     }
 }
